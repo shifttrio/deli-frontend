@@ -66,27 +66,40 @@ p {
 </div>
 
 <script>
-
 let tg = window.Telegram.WebApp;
 tg.expand(); // fullscreen
 
-let user = tg.initDataUnsafe.user;
+// Telegram user obyekt
+let tgUser = tg.initDataUnsafe.user;
 
-if (user) {
+// Avval default fullName Telegramdan olingan
+let fullName = tgUser ? tgUser.first_name + (tgUser.last_name ? " " + tgUser.last_name : "") : "Guest";
 
-    let fullName = user.first_name;
+// Agar telegram photo bo'lsa, avatarni yangilaymiz
+if (tgUser && tgUser.photo_url) {
+    document.getElementById("photo").src = tgUser.photo_url;
+}
 
-    if (user.last_name) {
-        fullName += " " + user.last_name;
-    }
+// Agar DB bilan ulanmoqchi bo'lsak: chat_id bo'yicha full_name fetch qilamiz
+if (tgUser && tgUser.id) {
 
-    document.getElementById("name").innerText =
-        "Welcome " + fullName;
+    let chatId = tgUser.id;
 
-    // Agar telegram photo bo'lsa
-    if (user.photo_url) {
-        document.getElementById("photo").src = user.photo_url;
-    }
+    fetch("http://localhost:8080/api/user/name/" + chatId) // Spring Boot API endpoint
+        .then(res => res.json())
+        .then(data => {
+            if (data.fullName) {
+                document.getElementById("name").innerText = "Welcome " + data.fullName;
+            } else {
+                document.getElementById("name").innerText = "Welcome " + fullName;
+            }
+        })
+        .catch(err => {
+            console.error("API error:", err);
+            document.getElementById("name").innerText = "Welcome " + fullName;
+        });
+} else {
+    document.getElementById("name").innerText = "Welcome " + fullName;
 }
 
 </script>
