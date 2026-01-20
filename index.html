@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Bron Hotel</title>
+
+<!-- Telegram Web App API -->
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<style>
+
+body {
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+    background: linear-gradient(135deg,#0f2027,#203a43,#2c5364);
+    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.card {
+    background: rgba(255,255,255,0.1);
+    backdrop-filter: blur(10px);
+    padding: 30px;
+    border-radius: 20px;
+    width: 320px;
+    text-align: center;
+    color: white;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+}
+
+.avatar {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    border: 3px solid white;
+    margin-bottom: 15px;
+    object-fit: cover;
+}
+
+h2 {
+    margin: 10px 0;
+}
+
+p {
+    opacity: 0.8;
+}
+
+</style>
+
+</head>
+<body>
+
+<div class="card">
+
+    <img id="photo" class="avatar"
+         src="https://cdn-icons-png.flaticon.com/512/149/149071.png">
+
+    <h2 id="name">Welcome</h2>
+    <p>Bron Hotel Web App</p>
+
+</div>
+
+<script>
+
+let tg = window.Telegram.WebApp;
+tg.expand(); // fullscreen
+
+let user = tg.initDataUnsafe.user;
+
+if (user) {
+
+    let fullName = user.first_name;
+
+    if (user.last_name) {
+        fullName += " " + user.last_name;
+    }
+
+    document.getElementById("name").innerText =
+        "Welcome " + fullName;
+
+    // Agar telegram photo bo'lsa
+    if (user.photo_url) {
+        document.getElementById("photo").src = user.photo_url;
+    }
+}
+
+</script>
+
+</body>
+</html>
